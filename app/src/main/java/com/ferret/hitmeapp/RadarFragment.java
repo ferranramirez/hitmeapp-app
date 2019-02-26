@@ -20,7 +20,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
@@ -46,7 +48,7 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback, Locat
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View root = inflater.inflate(R.layout.activity_maps, container, false);
+        final View root = inflater.inflate(R.layout.fragment_maps, container, false);
 
         setUpLocation();
         SupportMapFragment mMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
@@ -131,15 +133,15 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback, Locat
 
     }
 
-
     private void setEventMarkers(ArrayList<Event> eventList) {
 
         for( Event e:eventList) {
             LatLng place = new LatLng(Double.valueOf( e.getLatitude() ), Double.valueOf( e.getLongitude()) );
-            mMap.addMarker(new MarkerOptions().position(place)
+            Marker eventLoc = mMap.addMarker(new MarkerOptions()
+                    .position(place)
                     .title(e.getName())
-                    .snippet(e.getDescription()));
-
+                    .snippet(e.getDescription())
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
         }
     }
 
@@ -148,7 +150,6 @@ public class RadarFragment extends Fragment implements OnMapReadyCallback, Locat
         ArrayList<Event> result = new ArrayList<>();
 
         try {
-            //JSONObject eventsAPI = new JSONObject(json);
             JSONArray jsonArray = new JSONArray(json);
 
             for (int i = 0; i < jsonArray.length(); i++) {
